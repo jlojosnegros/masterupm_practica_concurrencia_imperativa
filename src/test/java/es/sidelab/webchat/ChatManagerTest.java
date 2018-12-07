@@ -31,7 +31,7 @@ public class ChatManagerTest {
 		});
 
 		// Crear un nuevo chat en el chatManager
-		chatManager.newChat("Chat2", 5, TimeUnit.SECONDS);
+		chatManager.newChat("Chat", 5, TimeUnit.SECONDS);
 
 		// Comprobar que el chat recibido en el método 'newChat' se llama 'Chat'
 		Assertions.assertThat(chatName[0]).isEqualTo("Chat");

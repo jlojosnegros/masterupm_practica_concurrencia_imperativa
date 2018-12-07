@@ -91,8 +91,18 @@ public class ApplicationConcurrencyTest {
             this.chatManager = chatManager;
             this.username = username;
             this.numberOfChatsToCreate = numberOfChatsToCreate;
+
+            System.out.println(this.toString());
         }
 
+        @Override
+        public String toString() {
+            return "CreateNewChatsAndRegisterTestUser{" +
+                    "chatManager=" + chatManager +
+                    ", username='" + username + '\'' +
+                    ", numberOfChatsToCreate=" + numberOfChatsToCreate +
+                    '}';
+        }
 
         @Override
         public TestResult call() throws InterruptedException, TimeoutException {

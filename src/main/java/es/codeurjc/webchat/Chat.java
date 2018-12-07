@@ -4,11 +4,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class Chat {
 
 	private String name;
-	private Map<String, User> users = new HashMap<>();
+	private ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
 
 	private ChatManager chatManager;
 
@@ -22,19 +24,28 @@ public class Chat {
 	}
 
 	public void addUser(User user) {
-		users.put(user.getName(), user);
-		for(User u : users.values()){
-			if (u != user) {
-				u.newUserInChat(this, user);
-			}
-		}
+		users.computeIfAbsent(user.getName(), ( key) -> {
+			users.forEach((k,v) -> {
+				v.newUserInChat(this,user);
+					});
+			return user;
+		});
+//		users.put(user.getName(), user);
+//		for(User u : users.values()){
+//			if (u != user) {
+//				u.newUserInChat(this, user);
+//			}
+//		}
 	}
 
 	public void removeUser(User user) {
 		users.remove(user.getName());
-		for(User u : users.values()){
-			u.userExitedFromChat(this, user);
-		}
+//		for(User u : users.values()){
+//			u.userExitedFromChat(this, user);
+//		}
+		users.forEachValue(1, (u) -> {
+			u.userExitedFromChat(this,user);
+		});
 	}
 
 	public Collection<User> getUsers() {
@@ -46,9 +57,12 @@ public class Chat {
 	}
 
 	public void sendMessage(User user, String message) {
-		for(User u : users.values()){
-			u.newMessage(this, user, message);
-		}
+		users.forEachEntry(1, (userEntry) -> {
+			userEntry.getValue().newMessage(this,user,message);
+		});
+//		for(User u : users.values()){
+//			u.newMessage(this, user, message);
+//		}
 	}
 
 	public void close() {

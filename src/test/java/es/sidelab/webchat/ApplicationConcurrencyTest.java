@@ -2,7 +2,6 @@ package es.sidelab.webchat;
 
 import es.codeurjc.webchat.Chat;
 import es.codeurjc.webchat.ChatManager;
-import org.assertj.core.api.Assertions;
 import org.jlom.utils.chrono.TimeValue;
 import org.junit.Test;
 
@@ -109,7 +108,7 @@ public class ApplicationConcurrencyTest {
 
             TestResult testResult = new TestResult(username);
 
-            TestUser testUser = new TestUser(username);
+            SyncUser testUser = new SyncUser(new TestUser(username));
             chatManager.newUser(testUser);
 
             for (int idx = 0; idx < numberOfChatsToCreate; idx++) {

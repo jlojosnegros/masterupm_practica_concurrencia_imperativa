@@ -12,42 +12,42 @@ public class TestUser implements User {
 	}
 
 	@Override
-	public synchronized String getName() {
+	public String getName() {
 		return name;
 	}
 	
-	public synchronized String getColor(){
+	public String getColor(){
 		return "007AFF";
 	}
 
 	@Override
-	public synchronized void newChat(Chat chat) {
+	public void newChat(Chat chat) {
 		System.out.println(getName() + ":" + "New chat " + chat.getName());
 	}
 
 	@Override
-	public synchronized void chatClosed(Chat chat) {
+	public void chatClosed(Chat chat) {
 		System.out.println(getName() + ":" + "Chat " + chat.getName() + " closed ");
 	}
 
 	@Override
-	public synchronized void newUserInChat(Chat chat, User user) {
+	public void newUserInChat(Chat chat, User user) {
 		System.out.println(getName() + ":" + "New user " + user.getName() + " in chat " + chat.getName());
 	}
 
 	@Override
-	public synchronized void userExitedFromChat(Chat chat, User user) {
+	public void userExitedFromChat(Chat chat, User user) {
 		System.out.println(getName() + ":" + "User " + user.getName() + " exited from chat " + chat.getName());
 	}
 
 	@Override
-	public synchronized void newMessage(Chat chat, User user, String message) {
+	public void newMessage(Chat chat, User user, String message) {
 		System.out.println("New message '" + message + "' from user " + user.getName()
 				+ " in chat " + chat.getName());
 	}
 
 	@Override
-	public synchronized String toString() {
+	public String toString() {
 		return "User[" + name + "]";
 	}	
 }

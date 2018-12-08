@@ -39,7 +39,7 @@ public class ChatManager {
 
 		return chats.computeIfAbsent(name, (key) -> {
 			Chat newChat = new Chat(this, key);
-			users.forEachValue(1, (value)->{
+			users.forEachValue(1, (value)-> {
 				value.newChat(newChat);
 			});
 			return newChat;

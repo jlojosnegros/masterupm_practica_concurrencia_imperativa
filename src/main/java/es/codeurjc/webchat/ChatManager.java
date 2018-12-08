@@ -30,8 +30,7 @@ public class ChatManager {
 //		}
 	}
 
-	public Chat newChat(String name, long timeout, TimeUnit unit) throws InterruptedException,
-			TimeoutException {
+	public Chat newChat(String name, long timeout, TimeUnit unit) throws TimeoutException {
 
 		///@todo no me fio de esta comprobacion porque puede que haya una insercion en medio...
 		if (chats.size() == maxChats) {

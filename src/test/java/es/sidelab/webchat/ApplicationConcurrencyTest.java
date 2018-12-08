@@ -2,9 +2,11 @@ package es.sidelab.webchat;
 
 import es.codeurjc.webchat.Chat;
 import es.codeurjc.webchat.ChatManager;
+import es.codeurjc.webchat.User;
 import org.jlom.utils.chrono.TimeValue;
 import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.*;
 
 import static org.assertj.core.api.Assertions.*;
@@ -104,11 +106,12 @@ public class ApplicationConcurrencyTest {
         }
 
         @Override
-        public TestResult call() throws TimeoutException {
+        public TestResult call() throws TimeoutException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
             TestResult testResult = new TestResult(username);
 
-            SyncUser testUser = new SyncUser(new TestUser(username));
+            //SyncUser testUser = new SyncUser(new TestUser(username));
+            User testUser = new UserBuilder(TestUser.class).sync().user(username);
             chatManager.newUser(testUser);
 
             for (int idx = 0; idx < numberOfChatsToCreate; idx++) {

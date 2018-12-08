@@ -39,7 +39,7 @@ public class ChatManagerTest {
 	}
 
 	@Test
-	public void newUserInChat() throws InterruptedException, TimeoutException {
+	public void newUserInChat() throws TimeoutException {
 
 		ChatManager chatManager = new ChatManager(5);
 

@@ -105,7 +105,7 @@ public class ApplicationConcurrencyTest {
         }
 
         @Override
-        public TestResult call() throws InterruptedException, TimeoutException {
+        public TestResult call() throws TimeoutException {
 
             TestResult testResult = new TestResult(username);
 

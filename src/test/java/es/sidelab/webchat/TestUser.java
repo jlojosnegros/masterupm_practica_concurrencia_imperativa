@@ -12,42 +12,42 @@ public class TestUser implements User {
 	}
 
 	@Override
-	public String getName() {
+	public synchronized String getName() {
 		return name;
 	}
 	
-	public String getColor(){
+	public synchronized String getColor(){
 		return "007AFF";
 	}
 
 	@Override
-	public void newChat(Chat chat) {
-		System.out.println("New chat " + chat.getName());
+	public synchronized void newChat(Chat chat) {
+		System.out.println(getName() + ":" + "New chat " + chat.getName());
 	}
 
 	@Override
-	public void chatClosed(Chat chat) {
-		System.out.println("Chat " + chat.getName() + " closed ");
+	public synchronized void chatClosed(Chat chat) {
+		System.out.println(getName() + ":" + "Chat " + chat.getName() + " closed ");
 	}
 
 	@Override
-	public void newUserInChat(Chat chat, User user) {
-		System.out.println("New user " + user.getName() + " in chat " + chat.getName());
+	public synchronized void newUserInChat(Chat chat, User user) {
+		System.out.println(getName() + ":" + "New user " + user.getName() + " in chat " + chat.getName());
 	}
 
 	@Override
-	public void userExitedFromChat(Chat chat, User user) {
-		System.out.println("User " + user.getName() + " exited from chat " + chat.getName());
+	public synchronized void userExitedFromChat(Chat chat, User user) {
+		System.out.println(getName() + ":" + "User " + user.getName() + " exited from chat " + chat.getName());
 	}
 
 	@Override
-	public void newMessage(Chat chat, User user, String message) {
+	public synchronized void newMessage(Chat chat, User user, String message) {
 		System.out.println("New message '" + message + "' from user " + user.getName()
 				+ " in chat " + chat.getName());
 	}
 
 	@Override
-	public String toString() {
+	public synchronized String toString() {
 		return "User[" + name + "]";
 	}	
 }

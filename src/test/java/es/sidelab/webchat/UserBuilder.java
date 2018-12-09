@@ -39,6 +39,16 @@ public class UserBuilder {
     }
 
     public User user(String name) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        User user = applyDecorators(name);
+        decorators.clear();
+        return user;
+    }
+
+    public User user_wihoutReset(String name) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        return applyDecorators(name);
+    }
+
+    private User applyDecorators(String name) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         Constructor<? extends User> constructor = this.base.getConstructor(String.class);
         User user = constructor.newInstance(name);
 

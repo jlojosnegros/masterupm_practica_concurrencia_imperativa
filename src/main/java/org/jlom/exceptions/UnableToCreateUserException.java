@@ -1,4 +1,4 @@
-package es.sidelab.webchat;
+package org.jlom.exceptions;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;

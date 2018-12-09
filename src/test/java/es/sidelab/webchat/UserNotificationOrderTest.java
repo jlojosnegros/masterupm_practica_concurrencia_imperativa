@@ -3,11 +3,10 @@ package es.sidelab.webchat;
 import es.codeurjc.webchat.Chat;
 import es.codeurjc.webchat.ChatManager;
 import es.codeurjc.webchat.User;
-import org.assertj.core.api.Assertions;
+import org.jlom.exceptions.UnableToCreateUserException;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -28,7 +27,7 @@ public class UserNotificationOrderTest {
         Chat chat = chatManager.newChat("chat", 10, TimeUnit.SECONDS);
 
         TestUser sender = new TestUser("Sender");
-        User receiver = null;
+        User receiver;
         try {
             receiver = new UserBuilder(TestUser.class).receiveChecker(NumMessages, exchanger).user("Receiver");
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {

@@ -110,7 +110,6 @@ public class ApplicationConcurrencyTest {
 
             TestResult testResult = new TestResult(username);
 
-            //SyncUser testUser = new SyncUser(new TestUser(username));
             User testUser = new UserBuilder(TestUser.class).sync().user(username);
             chatManager.newUser(testUser);
 

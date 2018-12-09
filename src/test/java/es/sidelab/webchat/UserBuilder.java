@@ -6,6 +6,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Exchanger;
 import java.util.function.Function;
 
 public class UserBuilder {
@@ -37,7 +38,10 @@ public class UserBuilder {
         this.decorators.push(SyncUser::new);
         return this;
     }
-
+    public UserBuilder receiveChecker(int numMessagesToWait, Exchanger<Boolean> exchanger) {
+        this.decorators.push( (element) -> new ReceiveCheckerUser(element, numMessagesToWait, exchanger));
+        return this;
+    }
     public User user(String name) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         User user = applyDecorators(name);
         decorators.clear();

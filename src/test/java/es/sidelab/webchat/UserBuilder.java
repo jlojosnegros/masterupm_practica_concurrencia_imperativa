@@ -5,11 +5,13 @@ import es.codeurjc.webchat.User;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Stack;
+import java.util.concurrent.CountDownLatch;
+import java.util.function.Function;
 
 public class UserBuilder {
 
     private final Class<? extends User> base;
-    private Stack<Class<? extends User>> decorators;
+    private Stack<Function<User,User>> decorators;
 
     public UserBuilder(Class<? extends User> base) {
         this.base = base;
@@ -17,17 +19,22 @@ public class UserBuilder {
     }
 
     public UserBuilder slow() {
-        this.decorators.push(SlowUser.class);
+        this.decorators.push(SlowUser::new);
         return this;
     }
 
-    public UserBuilder latched() {
-        this.decorators.push(LatchedUser.class);
+    public UserBuilder slow(long delay) {
+        this.decorators.push( (element) -> new SlowUser(element,delay));
+        return this;
+    }
+
+    public UserBuilder latched(CountDownLatch latch) {
+        this.decorators.push((element ) -> new LatchedUser(element, latch));
         return this;
     }
 
     public UserBuilder sync() {
-        this.decorators.push(SyncUser.class);
+        this.decorators.push(SyncUser::new);
         return this;
     }
 
@@ -35,20 +42,10 @@ public class UserBuilder {
         Constructor<? extends User> constructor = this.base.getConstructor(String.class);
         User user = constructor.newInstance(name);
 
-        for (Class<? extends User> element : decorators ){
-            user = element.getConstructor(User.class).newInstance(user);
+        for( Function<User,User> inter : decorators) {
+            user = inter.apply(user);
         }
 
         return user;
-
-//        decorators.stream().reduce(user, (a, b) -> {
-//            try {
-//                User user1 = b.getConstructor(User.class).newInstance(a);
-//            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-//                e.printStackTrace();
-//            }
-//        });
-
-
     }
 }

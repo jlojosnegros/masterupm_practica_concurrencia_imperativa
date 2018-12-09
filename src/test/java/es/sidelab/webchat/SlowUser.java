@@ -7,7 +7,7 @@ public class SlowUser implements User {
 
 
     private static final long DefaultDelay = 1000; //millis
-    private final User user;
+    private final User wrapperUser;
     private final long delay;
 
 
@@ -15,19 +15,19 @@ public class SlowUser implements User {
         this(user, DefaultDelay);
     }
 
-    public SlowUser(User user, long delay) {
-        this.user = user;
+    public SlowUser(User wrapperUser, long delay) {
+        this.wrapperUser = wrapperUser;
         this.delay = delay;
     }
 
     @Override
     public String getName() {
-        return user.getName();
+        return wrapperUser.getName();
     }
 
     @Override
     public String getColor() {
-        return user.getColor();
+        return wrapperUser.getColor();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class SlowUser implements User {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        user.newChat(chat);
+        wrapperUser.newChat(chat);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SlowUser implements User {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        user.chatClosed(chat);
+        wrapperUser.chatClosed(chat);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class SlowUser implements User {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        user.newUserInChat(chat, user);
+        wrapperUser.newUserInChat(chat, user);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class SlowUser implements User {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        user.userExitedFromChat(chat, user);
+        wrapperUser.userExitedFromChat(chat, user);
     }
 
     @Override
@@ -77,11 +77,11 @@ public class SlowUser implements User {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        user.newMessage(chat, user, message);
+        wrapperUser.newMessage(chat, user, message);
     }
 
     @Override
     public String toString() {
-        return "Slow{ " + user.toString() + "}";
+        return "Slow{ " + wrapperUser.toString() + "}";
     }
 }

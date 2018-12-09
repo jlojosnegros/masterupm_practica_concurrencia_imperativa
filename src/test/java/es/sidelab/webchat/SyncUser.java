@@ -5,49 +5,49 @@ import es.codeurjc.webchat.User;
 
 public class SyncUser implements User {
 
-    private final User user;
+    private final User wrapperUser;
 
     public SyncUser(User user) {
-        this.user = user;
+        wrapperUser = user;
     }
 
     @Override
     public synchronized String getName() {
-        return user.getName();
+        return wrapperUser.getName();
     }
 
     @Override
     public synchronized String getColor() {
-        return user.getColor();
+        return wrapperUser.getColor();
     }
 
     @Override
     public synchronized void newChat(Chat chat) {
-        user.newChat(chat);
+        wrapperUser.newChat(chat);
     }
 
     @Override
     public synchronized void chatClosed(Chat chat) {
-        user.chatClosed(chat);
+        wrapperUser.chatClosed(chat);
     }
 
     @Override
     public synchronized void newUserInChat(Chat chat, User user) {
-        this.user.newUserInChat(chat, user);
+        wrapperUser.newUserInChat(chat, user);
     }
 
     @Override
     public synchronized void userExitedFromChat(Chat chat, User user) {
-        this.user.userExitedFromChat(chat, user);
+        wrapperUser.userExitedFromChat(chat, user);
     }
 
     @Override
     public synchronized void newMessage(Chat chat, User user, String message) {
-        this.user.newMessage(chat, user, message);
+        wrapperUser.newMessage(chat, user, message);
     }
 
     @Override
     public synchronized String toString() {
-        return "Synched{ " + user.toString() + "}";
+        return "Synched{ " + wrapperUser.toString() + "}";
     }
 }

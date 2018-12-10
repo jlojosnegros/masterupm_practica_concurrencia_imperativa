@@ -2,13 +2,13 @@ package es.codeurjc.webchat;
 
 import java.util.concurrent.*;
 
-public class ActiverUser implements User{
+public class ActiveUser implements User{
 
     private final User wrappedUser;
     private ExecutorService executorService;
 
 
-    public ActiverUser(User user) {
+    public ActiveUser(User user) {
         this.wrappedUser = user;
         this.executorService = Executors.newSingleThreadExecutor();
     }

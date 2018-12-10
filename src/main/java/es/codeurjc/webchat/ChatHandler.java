@@ -56,15 +56,16 @@ public class ChatHandler extends TextWebSocketHandler {
 		String userName = jsonMsg.get("user").asText();
 
 		WebSocketUser user = new WebSocketUser(session, userName, colors[colorIndex]);
+		ActiveUser activeUser = new ActiveUser(user);
 		colorIndex = (colorIndex+1) % colors.length;
 		
-		session.getAttributes().put("user", user);	
+		session.getAttributes().put("user", activeUser);
 
-		chatManager.newUser(user);
+		chatManager.newUser(activeUser);
 		Chat chat = chatManager.newChat(chatName, 5, TimeUnit.SECONDS);
 		session.getAttributes().put("chat", chat);
 
-		chat.addUser(user);
+		chat.addUser(activeUser);
 	}
 
 	@Override

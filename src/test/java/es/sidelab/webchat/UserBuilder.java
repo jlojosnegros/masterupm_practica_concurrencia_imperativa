@@ -1,5 +1,6 @@
 package es.sidelab.webchat;
 
+import es.codeurjc.webchat.ActiveUser;
 import es.codeurjc.webchat.User;
 
 import java.lang.reflect.Constructor;
@@ -38,6 +39,12 @@ public class UserBuilder {
         this.decorators.push(SyncUser::new);
         return this;
     }
+
+    public UserBuilder active() {
+        this.decorators.push(ActiveUser::new);
+        return this;
+    }
+
     public UserBuilder receiveChecker(int numMessagesToWait, Exchanger<Boolean> exchanger) {
         this.decorators.push( (element) -> new ReceiveCheckerUser(element, numMessagesToWait, exchanger));
         return this;

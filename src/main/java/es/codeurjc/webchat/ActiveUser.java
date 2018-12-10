@@ -61,7 +61,8 @@ public class ActiveUser implements User{
     }
 
     /// How to shutdown gracefully if java has no "destructor" ?
-    public void destructor() {
+    @Override
+    public void cleanUp() {
 
         executorService.shutdown();
         try {

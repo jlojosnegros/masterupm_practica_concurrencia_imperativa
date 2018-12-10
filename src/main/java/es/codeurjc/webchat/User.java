@@ -16,4 +16,6 @@ public interface User {
 
 	public void newMessage(Chat chat, User user, String message);
 
+	public default void cleanUp() {};
+
 }

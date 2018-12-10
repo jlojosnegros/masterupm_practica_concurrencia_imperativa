@@ -1,5 +1,6 @@
 package es.codeurjc.webchat;
 
+import javax.annotation.PreDestroy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -75,4 +76,12 @@ public class ChatManager {
 	}
 
 	public void close() {}
+
+
+	@PreDestroy
+	public void cleanUp() {
+		this.users.forEach( (name, user) -> {
+			user.cleanUp();
+		});
+	}
 }

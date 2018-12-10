@@ -50,7 +50,7 @@ public class ChatHandler extends TextWebSocketHandler {
 	}
 
 	private void newUser(WebSocketSession session, JsonNode jsonMsg)
-			throws InterruptedException, TimeoutException {
+			throws TimeoutException {
 		
 		String chatName = jsonMsg.get("chat").asText();
 		String userName = jsonMsg.get("user").asText();
@@ -58,8 +58,9 @@ public class ChatHandler extends TextWebSocketHandler {
 		WebSocketUser user = new WebSocketUser(session, userName, colors[colorIndex]);
 		ActiveUser activeUser = new ActiveUser(user);
 		colorIndex = (colorIndex+1) % colors.length;
-		
-		session.getAttributes().put("user", activeUser);
+
+		///@todo Esto solo funciona si meto aqui el WebSockerUser ... pero no tengo claro que sea lo que tiene que ser
+		session.getAttributes().put("user", user);
 
 		chatManager.newUser(activeUser);
 		Chat chat = chatManager.newChat(chatName, 5, TimeUnit.SECONDS);

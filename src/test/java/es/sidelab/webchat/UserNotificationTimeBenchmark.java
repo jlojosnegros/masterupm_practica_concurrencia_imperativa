@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CountDownLatch;
@@ -24,8 +25,9 @@ public class UserNotificationTimeBenchmark {
 
 
     @BenchmarkOptions(warmupRounds = 10,benchmarkRounds = 10)
+    @Scope(scopeName = "benchmark")
     @Test
-    public void test_NotificationsShouldBeHandledInParallelByUsers() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, TimeoutException {
+    public void benchmark_NotificationsShouldBeHandledInParallelByUsers() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, TimeoutException {
 
         ChatManager chatManager = new ChatManager(1);
         UserBuilder userBuilder = new UserBuilder(TestUser.class);

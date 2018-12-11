@@ -17,7 +17,7 @@ import es.codeurjc.webchat.User;
 public class ChatManagerTest {
 
 	@Test
-	public void newChat() throws TimeoutException {
+	public void test_newChat() throws TimeoutException {
 
 		// Crear el chat Manager
 		ChatManager chatManager = new ChatManager(5);
@@ -39,7 +39,7 @@ public class ChatManagerTest {
 	}
 
 	@Test
-	public void newUserInChat() throws TimeoutException {
+	public void test_newUserInChat() throws TimeoutException {
 
 		ChatManager chatManager = new ChatManager(5);
 

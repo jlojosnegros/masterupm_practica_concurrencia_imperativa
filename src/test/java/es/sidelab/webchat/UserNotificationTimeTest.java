@@ -10,11 +10,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserNotificationTimeTest {
 
-    private static final int NumUsers = 4;
+    private static final int NumUsers = 10;
+    private static final long DelayPerUser = 1000; //millis
 
     @Test
     public void test_NotificationsShouldBeHandledInParallelByUsers() throws InvocationTargetException,
@@ -31,7 +33,7 @@ public class UserNotificationTimeTest {
 
         for (int idx = 0; idx < NumUsers; idx++) {
             chatManager.newUser( userBuilder
-                    .slow(1000)
+                    .slow(DelayPerUser)
                     .latched(latch)
                     .active()
                     .user("TestUser" + idx));
@@ -47,7 +49,7 @@ public class UserNotificationTimeTest {
             assertThat(latch.await(1+1, TimeUnit.SECONDS)).isTrue();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            Assertions.fail(e.getMessage());
+            fail(e.getMessage());
         }
     }
 }

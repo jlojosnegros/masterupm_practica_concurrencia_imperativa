@@ -46,7 +46,7 @@ public class UserNotificationTimeTest {
         new Thread(() -> chat.sendMessage(sender,"message:")).start();
 
         try {
-            assertThat(latch.await(1+1, TimeUnit.SECONDS)).isTrue();
+            assertThat(latch.await((DelayPerUser * 3 )/ 2, TimeUnit.SECONDS)).isTrue();
         } catch (InterruptedException e) {
             e.printStackTrace();
             fail(e.getMessage());

@@ -66,7 +66,7 @@ public class ActiveUser implements User{
 
         executorService.shutdown();
         try {
-            boolean b = executorService.awaitTermination(1, TimeUnit.SECONDS);
+            boolean b = executorService.awaitTermination(5, TimeUnit.SECONDS);
             ///@todo what to do with the boolean
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -32,41 +32,21 @@ public class SlowUser implements User {
 
     @Override
     public void newChat(Chat chat) {
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         wrapperUser.newChat(chat);
     }
 
     @Override
     public void chatClosed(Chat chat) {
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         wrapperUser.chatClosed(chat);
     }
 
     @Override
     public void newUserInChat(Chat chat, User user) {
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         wrapperUser.newUserInChat(chat, user);
     }
 
     @Override
     public void userExitedFromChat(Chat chat, User user) {
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         wrapperUser.userExitedFromChat(chat, user);
     }
 

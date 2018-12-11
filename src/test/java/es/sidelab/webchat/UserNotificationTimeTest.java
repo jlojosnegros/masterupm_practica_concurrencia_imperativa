@@ -3,7 +3,9 @@ package es.sidelab.webchat;
 import es.codeurjc.webchat.Chat;
 import es.codeurjc.webchat.ChatManager;
 import org.assertj.core.api.Assertions;
+import org.jlom.exceptions.UnableToCreateUserException;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CountDownLatch;
@@ -19,11 +21,7 @@ public class UserNotificationTimeTest {
     private static final long DelayPerUser = 1000; //millis
 
     @Test
-    public void test_NotificationsShouldBeHandledInParallelByUsers() throws InvocationTargetException,
-            NoSuchMethodException,
-            InstantiationException,
-            IllegalAccessException,
-            TimeoutException {
+    public void test_NotificationsShouldBeHandledInParallelByUsers() throws TimeoutException, UnableToCreateUserException {
 
         ChatManager chatManager = new ChatManager(1);
         UserBuilder userBuilder = new UserBuilder(TestUser.class);

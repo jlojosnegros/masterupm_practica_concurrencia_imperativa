@@ -27,13 +27,11 @@ public class UserNotificationOrderTest {
         Chat chat = chatManager.newChat("chat", 10, TimeUnit.SECONDS);
 
         TestUser sender = new TestUser("Sender");
-        User receiver;
-        try {
-            receiver = new UserBuilder(TestUser.class).receiveChecker(NumMessages, exchanger).user("Receiver");
-        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            e.printStackTrace();
-            throw new UnableToCreateUserException(e);
-        }
+        User receiver = new UserBuilder(TestUser.class)
+                    .slow()
+                    .receiveChecker(NumMessages, exchanger)
+                    .active()
+                    .user("Receiver");
 
         chatManager.newUser(sender);
         chatManager.newUser(receiver);

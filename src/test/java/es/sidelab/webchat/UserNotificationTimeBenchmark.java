@@ -4,6 +4,7 @@ import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.carrotsearch.junitbenchmarks.BenchmarkRule;
 import es.codeurjc.webchat.Chat;
 import es.codeurjc.webchat.ChatManager;
+import org.jlom.exceptions.UnableToCreateUserException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -27,7 +28,7 @@ public class UserNotificationTimeBenchmark {
     @BenchmarkOptions(warmupRounds = 10,benchmarkRounds = 10)
     @Scope(scopeName = "benchmark")
     @Test
-    public void benchmark_NotificationsShouldBeHandledInParallelByUsers() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, TimeoutException {
+    public void benchmark_NotificationsShouldBeHandledInParallelByUsers() throws TimeoutException, UnableToCreateUserException {
 
         ChatManager chatManager = new ChatManager(1);
         UserBuilder userBuilder = new UserBuilder(TestUser.class);

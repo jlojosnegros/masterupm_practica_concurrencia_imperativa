@@ -3,6 +3,7 @@ package es.sidelab.webchat;
 import es.codeurjc.webchat.Chat;
 import es.codeurjc.webchat.ChatManager;
 import es.codeurjc.webchat.User;
+import org.jlom.exceptions.UnableToCreateUserException;
 import org.jlom.utils.chrono.TimeValue;
 import org.junit.Test;
 
@@ -106,11 +107,17 @@ public class ApplicationConcurrencyTest {
         }
 
         @Override
-        public TestResult call() throws TimeoutException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        public TestResult call() throws Exception{
 
             TestResult testResult = new TestResult(username);
 
-            User testUser = new UserBuilder(TestUser.class).sync().user(username);
+            User testUser = null;
+            try {
+                testUser = new UserBuilder(TestUser.class).sync().user(username);
+            } catch (UnableToCreateUserException e) {
+                e.printStackTrace();
+                fail(e.getMessage());
+            }
             chatManager.newUser(testUser);
 
             for (int idx = 0; idx < numberOfChatsToCreate; idx++) {

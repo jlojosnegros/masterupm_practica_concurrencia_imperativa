@@ -2,6 +2,7 @@ package es.sidelab.webchat;
 
 import es.codeurjc.webchat.ActiveUser;
 import es.codeurjc.webchat.User;
+import org.jlom.exceptions.UnableToCreateUserException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -49,24 +50,33 @@ public class UserBuilder {
         this.decorators.push( (element) -> new ReceiveCheckerUser(element, numMessagesToWait, exchanger));
         return this;
     }
-    public User user(String name) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public User user(String name) throws UnableToCreateUserException {
         User user = applyDecorators(name);
         decorators.clear();
         return user;
     }
 
-    public User user_wihoutReset(String name) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public User user_wihoutReset(String name) throws UnableToCreateUserException {
         return applyDecorators(name);
     }
 
-    private User applyDecorators(String name) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        Constructor<? extends User> constructor = this.base.getConstructor(String.class);
-        User user = constructor.newInstance(name);
+    private User applyDecorators(String name) throws UnableToCreateUserException {
+        Constructor<? extends User> constructor;
+        try {
+            constructor = this.base.getConstructor(String.class);
+        } catch (NoSuchMethodException e) {
+            throw new UnableToCreateUserException(e);
+        }
+        User user;
+        try {
+            user = constructor.newInstance(name);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new UnableToCreateUserException(e);
+        }
 
         for( Function<User,User> inter : decorators) {
             user = inter.apply(user);
         }
-
         return user;
     }
 }

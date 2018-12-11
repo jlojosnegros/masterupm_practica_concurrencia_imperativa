@@ -1,20 +1,18 @@
 package es.sidelab.webchat;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
-
 import es.codeurjc.webchat.Chat;
 import es.codeurjc.webchat.ChatManager;
 import es.codeurjc.webchat.User;
+import org.jlom.exceptions.UnableToCreateUserException;
+import org.junit.Test;
+
+import java.util.concurrent.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ChatManagerTest {
+
 
 	@Test
 	public void test_newChat() throws TimeoutException {
@@ -36,6 +34,50 @@ public class ChatManagerTest {
 
 		// Comprobar que el chat recibido en el método 'newChat' se llama 'Chat'
 		assertThat(chatName[0]).isEqualTo("Chat");
+	}
+
+	@Test
+	public void test_newChat_Concurrent() {
+
+		// Crear el chat Manager
+		ChatManager chatManager = new ChatManager(5);
+
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		CompletionService<CompletionUser.CompletionResult> completionService = new ExecutorCompletionService<>(executorService);
+
+		final String expectedUsername_1 = "user1";
+//		final String expectedUsername_2 = "user2";
+
+
+		try {
+			chatManager.newUser(new UserBuilder(TestUser.class).completion(completionService).active().user(expectedUsername_1));
+			//chatManager.newUser(new UserBuilder(TestUser.class).completion(completionService).active().user(expectedUsername_2));
+
+		} catch (UnableToCreateUserException e) {
+			fail(e.getMessage());
+		}
+
+		// Crear un nuevo chat en el chatManager
+		try {
+			chatManager.newChat("Chat", 5, TimeUnit.SECONDS);
+		} catch (TimeoutException e) {
+			fail(e.getMessage());
+		}
+
+		try {
+			Future<CompletionUser.CompletionResult> take = completionService.take();
+
+			CompletionUser.CompletionResult completionResult = take.get();
+
+			assertThat(completionResult.getCalledUserName()).isEqualTo(expectedUsername_1);
+			assertThat(completionResult.getIn_param()).containsExactly("Chat");
+			assertThat(completionResult.getMethodCalled()).startsWith("newChat");
+			assertThat(completionResult.getReturnValue()).isNull();
+
+		} catch (InterruptedException | ExecutionException e) {
+			fail(e.getMessage());
+		}
+
 	}
 
 	@Test

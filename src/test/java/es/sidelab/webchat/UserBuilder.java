@@ -7,6 +7,7 @@ import org.jlom.exceptions.UnableToCreateUserException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Stack;
+import java.util.concurrent.CompletionService;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Exchanger;
 import java.util.function.Function;
@@ -50,6 +51,12 @@ public class UserBuilder {
         this.decorators.push( (element) -> new ReceiveCheckerUser(element, numMessagesToWait, exchanger));
         return this;
     }
+
+    public UserBuilder completion(CompletionService<CompletionUser.CompletionResult> completionService) {
+        this.decorators.push( (element) -> new CompletionUser(element, completionService));
+        return this;
+    }
+
     public User user(String name) throws UnableToCreateUserException {
         User user = applyDecorators(name);
         decorators.clear();

@@ -17,7 +17,11 @@ public class UserNotificationTimeTest {
     private static final int NumUsers = 4;
 
     @Test
-    public void test_NotificationsShouldBeHandledInParallelByUsers() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, TimeoutException {
+    public void test_NotificationsShouldBeHandledInParallelByUsers() throws InvocationTargetException,
+            NoSuchMethodException,
+            InstantiationException,
+            IllegalAccessException,
+            TimeoutException {
 
         ChatManager chatManager = new ChatManager(1);
         UserBuilder userBuilder = new UserBuilder(TestUser.class);
@@ -26,7 +30,11 @@ public class UserNotificationTimeTest {
         TestUser sender = new TestUser("Sender");
 
         for (int idx = 0; idx < NumUsers; idx++) {
-            chatManager.newUser( userBuilder.slow().latched(latch).user("TestUser" + idx));
+            chatManager.newUser( userBuilder
+                    .slow(1000)
+                    .latched(latch)
+                    .active()
+                    .user("TestUser" + idx));
         }
 
         Chat chat = chatManager.newChat("chat", 10, TimeUnit.SECONDS);
@@ -36,7 +44,7 @@ public class UserNotificationTimeTest {
         new Thread(() -> chat.sendMessage(sender,"message:")).start();
 
         try {
-            assertThat(latch.await(NumUsers+1, TimeUnit.SECONDS)).isTrue();
+            assertThat(latch.await(1+1, TimeUnit.SECONDS)).isTrue();
         } catch (InterruptedException e) {
             e.printStackTrace();
             Assertions.fail(e.getMessage());

@@ -73,4 +73,11 @@ public class ActiveUser implements User{
             executorService.shutdownNow();
         }
     }
+
+    @Override
+    public String toString() {
+        return "ActiveUser{[" + Thread.currentThread().getId() + "]" +
+                "wrappedUser=" + wrappedUser +
+                '}';
+    }
 }

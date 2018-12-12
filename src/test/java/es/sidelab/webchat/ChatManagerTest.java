@@ -6,7 +6,15 @@ import es.codeurjc.webchat.User;
 import org.jlom.exceptions.UnableToCreateUserException;
 import org.junit.Test;
 
-import java.util.concurrent.*;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -14,7 +22,10 @@ import static org.assertj.core.api.Assertions.fail;
 public class ChatManagerTest {
 
 
-	@Test
+    private static final int NumberOfUsers = 2;
+    private String baseUserName = "user";
+
+    @Test
 	public void test_newChat() throws TimeoutException {
 
 		// Crear el chat Manager
@@ -39,23 +50,27 @@ public class ChatManagerTest {
 	@Test
 	public void test_newChat_Concurrent() {
 
-		// Crear el chat Manager
+        // Crear el chat Manager
 		ChatManager chatManager = new ChatManager(5);
 
 		ExecutorService executorService = Executors.newSingleThreadExecutor();
-		CompletionService<CompletionUser.CompletionResult> completionService = new ExecutorCompletionService<>(executorService);
-
-		final String expectedUsername_1 = "user1";
-//		final String expectedUsername_2 = "user2";
-
+		CompletionService<CompletionUser.CompletionResult> completionService =
+                new ExecutorCompletionService<>(executorService);
 
 		try {
-			chatManager.newUser(new UserBuilder(TestUser.class).completion(completionService).active().user(expectedUsername_1));
-			//chatManager.newUser(new UserBuilder(TestUser.class).completion(completionService).active().user(expectedUsername_2));
+			for (int idx = 0; idx < NumberOfUsers; idx++) {
 
+				chatManager.newUser(new UserBuilder(TestUser.class)
+						.completion(completionService)
+						.active()
+						.user(baseUserName + idx)
+				);
+			}
 		} catch (UnableToCreateUserException e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
+
 
 		// Crear un nuevo chat en el chatManager
 		try {
@@ -65,20 +80,26 @@ public class ChatManagerTest {
 		}
 
 		try {
-			Future<CompletionUser.CompletionResult> take = completionService.take();
 
-			CompletionUser.CompletionResult completionResult = take.get();
+            for (int idx = 0; idx < NumberOfUsers; idx++) {
+                Future<CompletionUser.CompletionResult> take = completionService.take();
 
-			assertThat(completionResult.getCalledUserName()).isEqualTo(expectedUsername_1);
-			assertThat(completionResult.getIn_param()).containsExactly("Chat");
-			assertThat(completionResult.getMethodCalled()).startsWith("newChat");
-			assertThat(completionResult.getReturnValue()).isNull();
+                CompletionUser.CompletionResult completionResult = take.get(500, TimeUnit.MILLISECONDS);
 
-		} catch (InterruptedException | ExecutionException e) {
+                assertThat(completionResult.getCalledUserName()).isIn(chatManager.getUsers()
+                        .stream()
+                        .map(User::getName)
+                        .collect(Collectors.toList())
+                );
+                assertThat(completionResult.getIn_param()).containsExactly("Chat");
+                assertThat(completionResult.getMethodCalled()).startsWith("newChat");
+                assertThat(completionResult.getReturnValue()).isNull();
+            }
+
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			fail(e.getMessage());
 		}
-
-	}
+    }
 
 	@Test
 	public void test_newUserInChat() throws TimeoutException {

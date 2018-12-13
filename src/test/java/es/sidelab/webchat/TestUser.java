@@ -42,7 +42,7 @@ public class TestUser implements User {
 
 	@Override
 	public void newMessage(Chat chat, User user, String message) {
-		System.out.println("New message '" + message + "' from user " + user.getName()
+		System.out.println(getName() + ": New message '" + message + "' from user " + user.getName()
 				+ " in chat " + chat.getName());
 	}
 

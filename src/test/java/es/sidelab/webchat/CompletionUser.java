@@ -42,7 +42,8 @@ public class CompletionUser implements User {
         @Override
         public String toString() {
             return "CompletionResult{" +
-                    "methodCalled='" + methodCalled + '\'' +
+                    "calledUserName='" + calledUserName + '\'' +
+                    ", methodCalled='" + methodCalled + '\'' +
                     ", in_param=" + in_param +
                     ", returnValue='" + returnValue + '\'' +
                     '}';

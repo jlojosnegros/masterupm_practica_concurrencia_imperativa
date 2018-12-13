@@ -15,24 +15,12 @@ public class ActiveUser implements User{
 
     @Override
     public String getName() {
-        Future<String> ret = executorService.submit(wrappedUser::getName);
-        try {
-            return ret.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return "";
-        }
+        return wrappedUser.getName();
     }
 
     @Override
     public String getColor() {
-        Future<String> ret = executorService.submit(wrappedUser::getColor);
-        try {
-            return ret.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return "";
-        }
+        return wrappedUser.getColor();
     }
 
     @Override

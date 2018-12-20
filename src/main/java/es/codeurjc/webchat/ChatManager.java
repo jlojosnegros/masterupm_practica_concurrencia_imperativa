@@ -3,6 +3,7 @@ package es.codeurjc.webchat;
 import javax.annotation.PreDestroy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -10,10 +11,11 @@ public class ChatManager {
 
 	private ConcurrentHashMap<String, Chat> chats = new ConcurrentHashMap<>();
 	private ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
-	private int maxChats;
+	private Semaphore numberOfChats;
+	//private int maxChats;
 
 	public ChatManager(int maxChats) {
-		this.maxChats = maxChats;
+		this.numberOfChats = new Semaphore(maxChats);
 	}
 
 	public void newUser(User user) {
@@ -22,20 +24,17 @@ public class ChatManager {
 			throw new IllegalArgumentException("There is already a user with name \'"
 					+ user.getName() + "\'");
 		}
-
-//		if(users.containsKey(user.getName())){
-//			throw new IllegalArgumentException("There is already a user with name \'"
-//					+ user.getName() + "\'");
-//		} else {
-//			users.put(user.getName(), user);
-//		}
 	}
 
 	public Chat newChat(String name, long timeout, TimeUnit unit) throws TimeoutException {
 
-		///@todo no me fio de esta comprobacion porque puede que haya una insercion en medio...
-		if (chats.size() == maxChats) {
-			throw new TimeoutException("There is no enough capacity to create a new chat");
+		try {
+			boolean wasAcquired = numberOfChats.tryAcquire(timeout, unit);
+			if (!wasAcquired) {
+				throw new TimeoutException("There is no enough capacity to create a new chat");
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 
 		return chats.computeIfAbsent(name, (key) -> {
@@ -53,7 +52,7 @@ public class ChatManager {
 			throw new IllegalArgumentException("Trying to remove an unknown chat with name \'"
 					+ chat.getName() + "\'");
 		}
-
+		numberOfChats.release();
 		users.forEachValue(1, (value)->{
 			value.chatClosed(removedChat);
 		});
